@@ -84,38 +84,20 @@ const items = [{
     },
 ];
 
-const container = document.querySelector("#shop-items");
+
+let currentState = [...items];
+
+const itemsContainer = document.querySelector("#shop-items");
 const itemTemplate = document.querySelector("#item-template");
-const nothingFound = document.getElementById('nothing-found');
+const nothingFound = document.querySelector("#nothing-found");
 
-function makeShopItem(shopItem) {
-    const { title, description, tags, img, price } = shopItem;
-    const item = itemTemplate.content.cloneNode(true);
+function renderItems(arr) {
 
-    item.querySelector("h1").textContent = title;
-    item.querySelector("p").textContent = description;
-    item.querySelector("img").src = img;
-    item.querySelector(".price").textContent = `${price}P`;
-
-    const tagsContainer = item.querySelector(".tags");
-    tags.forEach((tag) => {
-        const element = document.createElement("span");
-        element.textContent = tag;
-        element.classList.add("tag");
-        tagsContainer.append(element);
-    });
-
-    return item;
-}
-
-let newItem = [...items];
-
-function searchItems(arr) {
     nothingFound.textContent = "";
-    container.innerHTML = "";
-
+    itemsContainer.innerHTML = "";
     arr.forEach((item) => {
-        container.append(makeShopItem(item));
+
+        itemsContainer.append(prepareShopItem(item));
     });
 
     if (!arr.length) {
@@ -123,4 +105,54 @@ function searchItems(arr) {
     }
 }
 
-searchItems(newItem);
+renderItems(currentState);
+
+function prepareShopItem(shopItem) {
+    const { title, description, tags, img, price, rating } = shopItem;
+    const item = itemTemplate.content.cloneNode(true);
+
+    item.querySelector("h1").textContent = title;
+    item.querySelector("p").textContent = description;
+    item.querySelector("img").src = img;
+    item.querySelector(".price").textContent = `${price}P`;
+
+    const ratingContainer = item.querySelector(".rating");
+
+    for (let i = 0; i < rating; i++) {
+        const star = document.createElement("i");
+        star.classList.add("fa", "fa-star");
+        ratingContainer.append(star);
+    }
+
+    const tagsHolder = item.querySelector(".tags");
+
+    tags.forEach((tag) => {
+        const element = document.createElement("span");
+        element.textContent = tag;
+        element.classList.add("tag");
+        tagsHolder.append(element);
+    });
+
+    return item;
+}
+
+const searchInput = document.querySelector("#search-input");
+const searchButton = document.querySelector("#search-btn");
+
+function applySearch() {
+    const searchString = searchInput.value.trim().toLowerCase();
+    currentState = items.filter((el) =>
+        el.title.toLowerCase().includes(searchString)
+    );
+    renderItems(currentState);
+}
+
+
+searchButton.addEventListener("click", applySearch);
+searchInput.addEventListener("search", applySearch);
+const sortControl = document.querySelector("#sort");
+
+sortControl.addEventListener("change", (event) => {
+    const selectedOption = event.target.value;
+    renderItems(currentState);
+});
