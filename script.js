@@ -152,7 +152,5 @@ searchButton.addEventListener("click", applySearch);
 searchInput.addEventListener("search", applySearch);
 const sortControl = document.querySelector("#sort");
 
-sortControl.addEventListener("change", (event) => {
-    const selectedOption = event.target.value;
-    renderItems(currentState);
-});
+
+renderItems(currentState);
