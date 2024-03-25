@@ -116,14 +116,6 @@ function prepareShopItem(shopItem) {
     item.querySelector("img").src = img;
     item.querySelector(".price").textContent = `${price}P`;
 
-    const ratingContainer = item.querySelector(".rating");
-
-    for (let i = 0; i < rating; i++) {
-        const star = document.createElement("i");
-        star.classList.add("fa", "fa-star");
-        ratingContainer.append(star);
-    }
-
     const tagsHolder = item.querySelector(".tags");
 
     tags.forEach((tag) => {
